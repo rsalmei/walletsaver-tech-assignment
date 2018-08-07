@@ -1,9 +1,9 @@
-from unittest import mock
+import os
 
 import pytest
-import os
+
 from plans.scraping import PlanData
-from plans.scraping.fastweb import parse_html, extract_plan, extract_field
+from plans.scraping.fastweb import parse_html
 
 
 @pytest.fixture(scope='session')
@@ -28,8 +28,8 @@ def test_fastweb_total(page):
 
     assert result == PlanData(product='INTERNET',
                               description='Internet illimitato fino ad 1 Gbit/s senza Telefono, profilo Gaming',
-                              current_price='24,95€/mese',
-                              old_price='29,95€')
+                              current_price='24,95',
+                              old_price='29,95')
 
 
 def test_fastweb_nothing(page_wrong):

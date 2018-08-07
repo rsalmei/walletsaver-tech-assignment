@@ -1,3 +1,4 @@
+import re
 from itertools import repeat
 from typing import Generator, Optional
 
@@ -6,6 +7,7 @@ from bs4 import BeautifulSoup, Tag
 from plans.scraping.domain import PlanData
 
 HTML_CLASSES = ('product', 'description', 'hilite', 'fullprice')
+DIGITS = re.compile('€(?:/mese)?')
 
 
 def parse_html(page: str) -> Generator[PlanData, None, None]:
@@ -19,7 +21,8 @@ def extract_plan(tag: Tag) -> Optional[PlanData]:
     """Extracts a plan data from a tag."""
     extracted = map(extract_field, repeat(tag), HTML_CLASSES)
     try:
-        return PlanData._make(extracted)
+        p, d, *prices = extracted
+        return PlanData(p, d, *map(DIGITS.sub, repeat(''), prices))
     except AttributeError:
         pass
 
