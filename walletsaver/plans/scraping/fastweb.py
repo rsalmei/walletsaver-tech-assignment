@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 from itertools import repeat
 from typing import Generator, Optional
 
@@ -21,8 +22,9 @@ def extract_plan(tag: Tag) -> Optional[PlanData]:
     """Extracts a plan data from a tag."""
     extracted = map(extract_field, repeat(tag), HTML_CLASSES)
     try:
-        p, d, *prices = extracted
-        return PlanData(p, d, *map(DIGITS.sub, repeat(''), prices))
+        title, descr, *prices = extracted
+        prices = map(lambda t: DIGITS.sub('', t).replace(',', '.'), prices)
+        return PlanData(title, descr, *map(Decimal, prices))
     except AttributeError:
         pass
 
