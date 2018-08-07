@@ -23,3 +23,6 @@ class CarrierPlan(models.Model):
     old_price = models.DecimalField(max_digits=8, decimal_places=2)
 
     objects = CarrierPlanManager.from_queryset(CarrierPlanQuerySet)()
+
+    def __str__(self):
+        return '#{} {}:{}'.format(self.id, self.get_carrier_display(), self.title)
