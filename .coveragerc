@@ -6,6 +6,7 @@ omit =
     walletsaver/walletsaver/*
     walletsaver/*/apps.py
     walletsaver/*/admin.py
+    walletsaver/*/migrations/*
 
 [report]
 # Regexes for lines to exclude from consideration
