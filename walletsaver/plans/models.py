@@ -1,6 +1,7 @@
 from django.db import models
 
 from plans.const import CARRIER_FASTWEB
+from plans.scraping import fetch_plans
 
 
 class CarrierPlanQuerySet(models.QuerySet):
@@ -9,7 +10,11 @@ class CarrierPlanQuerySet(models.QuerySet):
 
 
 class CarrierPlanManager(models.Manager):
-    pass
+    def resync_plans(self, carrier_id: int):
+        self.from_carrier(carrier_id).delete()
+        for plan in fetch_plans(carrier_id):
+            CarrierPlan.objects.create(carrier=carrier_id, **plan._asdict())
+
 
 class CarrierPlan(models.Model):
     PROVIDERS = (

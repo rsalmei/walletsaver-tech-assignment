@@ -73,7 +73,26 @@ The DRF framework is complete, including an API browser, but I've always found i
 For this project, I've decided to experiment leaving the tests out of the python source code. This means the packaging process can get only actual code, and test code never gets to the production environment. The biggest advantage of this is eliminating the risk of importing and running them there, which could wreak havok in the db.
 
 I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found, but it is worth it.
-  
+
 ## Deploy
 
 ## Frontend
+
+# How to use
+
+## Initialize data
+
+Enter the `manage.py` directory and run:
+
+```bash
+$ ./manage.py shell_plus
+```
+
+Now fetch the fastweb data and should obtain:
+
+````python
+In [1]: CarrierPlan.objects.resync_plans(1)
+
+In [2]: CarrierPlan.objects.all()
+Out[2]: <CarrierPlanQuerySet [<CarrierPlan: #1 fastweb:INTERNET>, <CarrierPlan: #2 fastweb:INTERNET + TELEFONO>, <CarrierPlan: #3 fastweb:INTERNET e Sky>, <CarrierPlan: #4 fastweb:INTERNET + TELEFONO e Sky>, <CarrierPlan: #5 fastweb:INTERNET + ENERGIA>, <CarrierPlan: #6 fastweb:INTERNET + TELEFONO + ENERGIA>]>
+````
