@@ -1,0 +1,15 @@
+beautifulsoup4~=4.6
+django~=2.1
+django-extensions~=2.1
+ipython
+pytest
+pytest-cache
+pytest-cov
+pytest-sugar
+pytest-watch
+pytest-xdist
+pytest-django
+pytest-pythonpath
+ipython
+pdbpp
+requests
