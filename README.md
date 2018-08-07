@@ -72,7 +72,12 @@ The DRF framework is complete, including an API browser, but I've always found i
 
 For this project, I've decided to experiment leaving the tests out of the python source code. This means the packaging process can get only actual code, and test code never gets to the production environment. The biggest advantage of this is eliminating the risk of importing and running them there, which could wreak havok in the db.
 
-I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found, but it is worth it.
+I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found.
+
+Actually, when I got to the point of testing a django model, I've included the `factory-boy` dependency, and I've realized I couldn't import my new `modelfactory` in shell_plus...
+I undid the split tests from the source. 
+
+To achieve again that production obliterate of tests, the `Dockerfile` recipe would have to delete the tests files, which is doable, but harder.
 
 ## Deploy
 

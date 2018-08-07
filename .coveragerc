@@ -4,9 +4,10 @@ branch = True
 omit =
     walletsaver/manage.py
     walletsaver/walletsaver/*
-    walletsaver/*/apps.py
-    walletsaver/*/admin.py
-    walletsaver/*/migrations/*
+    */apps.py
+    */admin.py
+    */migrations/*
+    */tests/*
 
 [report]
 # Regexes for lines to exclude from consideration

@@ -9,7 +9,7 @@ pytest-sugar
 pytest-watch
 pytest-xdist
 pytest-django
-pytest-pythonpath
 ipython
 pdbpp
 requests
+factory_boy
