@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 import pytest
 
@@ -26,10 +27,10 @@ def test_fastweb_total(page):
     with pytest.raises(StopIteration):
         next(gen)
 
-    assert result == PlanData(product='INTERNET',
+    assert result == PlanData(title='INTERNET',
                               description='Internet illimitato fino ad 1 Gbit/s senza Telefono, profilo Gaming',
-                              current_price='24,95',
-                              old_price='29,95')
+                              current_price=Decimal('24.95'),
+                              old_price=Decimal('29.95'))
 
 
 def test_fastweb_nothing(page_wrong):
