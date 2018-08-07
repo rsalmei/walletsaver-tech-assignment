@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup, Tag
 
 from plans.scraping.domain import PlanData
 
-HTML_CLASSES = ('product', 'description', 'hilite', 'small')
+HTML_CLASSES = ('product', 'description', 'hilite', 'fullprice')
 
 
 def parse_html(page: str) -> Generator[PlanData, None, None]:
@@ -26,4 +26,4 @@ def extract_plan(tag: Tag) -> Optional[PlanData]:
 
 def extract_field(tag: Tag, html_class: str) -> str:
     """Extracts a particular field from a tag."""
-    return ''.join(tag.find('span', class_=html_class).strings)
+    return ''.join(map(str.strip, tag.find('span', class_=html_class).strings))
