@@ -29,7 +29,7 @@ def fetch_plans(carrier_id: int) -> Generator[PlanData, None, None]:
         KeyError: if the carrier is unknown.
     """
 
-    # this would be a nice celery canvas chain, scheduled in `beat`,
+    # this could be a nice celery canvas chain, scheduled in `beat`,
     # running for all carriers in parallel:
     # workflow = group(
     #     chain(
