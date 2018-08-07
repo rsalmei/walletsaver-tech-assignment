@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db-serv:
+    image: postgres:10-alpine
+    hostname: db
+    container_name: wsaver-db
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: pass123
+  adminer-serv:
+    image: adminer
+    container_name: wsaver-adminer
+    ports:
+    - 8080:8080
