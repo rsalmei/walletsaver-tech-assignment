@@ -13,6 +13,13 @@ def page():
         yield f.read()
 
 
+@pytest.fixture(scope='session')
+def page_wrong():
+    path = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(path, 'fixture_fastweb_wrong.html')) as f:
+        yield f.read()
+
+
 def test_fastweb_total(page):
     gen = parse_html(page)
     result = next(gen)
@@ -22,7 +29,14 @@ def test_fastweb_total(page):
     assert result == PlanData(product='INTERNET',
                               description='Internet illimitato fino ad 1 Gbit/s senza Telefono, profilo Gaming',
                               current_price='24,95€/mese',
-                              old_price='anziché 29,95€')
+                              old_price='29,95€')
+
+
+def test_fastweb_nothing(page_wrong):
+    gen = parse_html(page_wrong)
+    with pytest.raises(StopIteration):
+        next(gen)
+
 
 def test_fastweb_parse_html():
     pass
