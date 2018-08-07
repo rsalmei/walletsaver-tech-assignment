@@ -36,7 +36,3 @@ def test_fastweb_nothing(page_wrong):
     gen = parse_html(page_wrong)
     with pytest.raises(StopIteration):
         next(gen)
-
-
-def test_fastweb_parse_html():
-    pass
