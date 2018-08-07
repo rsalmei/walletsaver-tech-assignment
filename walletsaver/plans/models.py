@@ -4,7 +4,9 @@ from plans.const import CARRIER_FASTWEB
 
 
 class CarrierPlanQuerySet(models.QuerySet):
-    pass
+    def from_carrier(self, carrier_id):
+        return self.filter(carrier=carrier_id)
+
 
 class CarrierPlanManager(models.Manager):
     pass
