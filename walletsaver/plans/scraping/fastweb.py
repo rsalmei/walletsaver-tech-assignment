@@ -1,9 +1,9 @@
 import re
 from decimal import Decimal
-from itertools import repeat
 from typing import Generator, Optional
 
 from bs4 import BeautifulSoup, Tag
+from itertools import repeat
 
 from plans.scraping.domain import PlanData
 

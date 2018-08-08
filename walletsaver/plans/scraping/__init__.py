@@ -3,7 +3,7 @@ Scraping facilities.
 This does not depend upon models, so the Manager should sync data.
 It also was made to support any number of independent carriers.
 """
-from typing import Generator, NoReturn
+from typing import Generator
 
 import requests
 
