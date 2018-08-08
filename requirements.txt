@@ -13,3 +13,4 @@ ipython
 pdbpp
 requests
 factory_boy
+psycopg2-binary
