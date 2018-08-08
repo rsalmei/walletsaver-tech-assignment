@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 
 from plans.const import CARRIER_FASTWEB
 from plans.scraping import fetch_plans
@@ -11,9 +11,12 @@ class CarrierPlanQuerySet(models.QuerySet):
 
 class CarrierPlanManager(models.Manager):
     def resync_plans(self, carrier_id: int):
-        self.from_carrier(carrier_id).delete()
-        for plan in fetch_plans(carrier_id):
-            CarrierPlan.objects.create(carrier=carrier_id, **plan._asdict())
+        with transaction.atomic():
+            # this logic must be in a db transaction, so the
+            # data is only changed if no errors are raised.
+            self.from_carrier(carrier_id).delete()
+            for plan in fetch_plans(carrier_id):
+                CarrierPlan.objects.create(carrier=carrier_id, **plan._asdict())
 
 
 class CarrierPlan(models.Model):
