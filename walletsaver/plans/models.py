@@ -22,8 +22,8 @@ class CarrierPlan(models.Model):
     )
 
     carrier = models.IntegerField(choices=PROVIDERS)
-    title = models.CharField(max_length=60, unique=True)
-    description = models.CharField(max_length=60)
+    title = models.CharField(max_length=128, unique=True)
+    description = models.CharField(max_length=1024)
     current_price = models.DecimalField(max_digits=8, decimal_places=2)
     old_price = models.DecimalField(max_digits=8, decimal_places=2)
 
