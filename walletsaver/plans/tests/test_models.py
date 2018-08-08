@@ -34,11 +34,27 @@ def test_plans_carrierplanmanager_resync_plans(plan_factory_db):
 
 
 @pytest.mark.django_db
-def test_plans_carrierplanmanager_resync_plans_error(invalid_carrier_id, plan_factory_db):
-    plan_factory_db()
-    num = CarrierPlan.objects.count()
+def test_plans_carrierplanmanager_resync_plans_error_global(plan_factory_db):
+    plan_factory_db(carrier=12)
+    num = CarrierPlan.objects.count()  # at least one object in db
+
     with pytest.raises(KeyError):
-        CarrierPlan.objects.resync_plans(invalid_carrier_id)
+        CarrierPlan.objects.resync_plans(-1)
 
     # guarantees no object was deleted.
-    assert num == CarrierPlan.objects.count()
+    assert CarrierPlan.objects.count() == num
+
+
+@pytest.mark.django_db
+def test_plans_carrierplanmanager_resync_plans_error_doesnt_remove(plan_factory_db):
+    plan_factory_db(carrier=12)
+    plan_factory_db(carrier=12)
+    num = CarrierPlan.objects.from_carrier(12).count()
+
+    with mock.patch('plans.models.fetch_plans') as mfp:
+        mfp.side_effect = UserWarning
+        with pytest.raises(UserWarning):
+            CarrierPlan.objects.resync_plans(12)
+
+    # guarantees no object was deleted.
+    assert CarrierPlan.objects.from_carrier(12).count() == num
