@@ -21,7 +21,7 @@ def page_wrong():
         yield f.read()
 
 
-def test_fastweb_total(page):
+def test_fastweb_total(page: str):
     gen = parse_html(page)
     result = next(gen)
     with pytest.raises(StopIteration):
@@ -33,7 +33,7 @@ def test_fastweb_total(page):
                               old_price=Decimal('29.95'))
 
 
-def test_fastweb_nothing(page_wrong):
+def test_fastweb_nothing(page_wrong: str):
     gen = parse_html(page_wrong)
     with pytest.raises(StopIteration):
         next(gen)

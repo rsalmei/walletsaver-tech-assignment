@@ -28,7 +28,7 @@ def test_scraping_fetch_plans(mretrieve: mock.Mock, carrier_id: int):
     scraper.parse_html.assert_called_once_with(mretrieve())
 
 
-def test_scraping_fetch_plans_invalid(invalid_carrier_id):
+def test_scraping_fetch_plans_invalid(invalid_carrier_id: int):
     with pytest.raises(KeyError):
         scraping.fetch_plans(invalid_carrier_id)
 
