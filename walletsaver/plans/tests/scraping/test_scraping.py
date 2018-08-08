@@ -4,17 +4,6 @@ import pytest
 from requests import HTTPError
 
 from plans import scraping
-from plans.const import CARRIER_FASTWEB
-
-
-@pytest.fixture(params=(CARRIER_FASTWEB,))
-def carrier_id(request):
-    return request.param
-
-
-@pytest.fixture(params=(-1, 42, 1e10))
-def invalid_carrier_id(request):
-    return request.param
 
 
 @mock.patch('plans.scraping.retrieve_page_content')
