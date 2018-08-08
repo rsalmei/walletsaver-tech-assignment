@@ -45,6 +45,8 @@ I would set up an asynchronous task handler like celery to run this task regular
 
 To not ever removing data, as customers would probably have already chosen some of them, it would be necessary some versioning or expiry control, to be able to retrieve only current plans, without losing any history.
 
+Also the software architecture implemented needed only a `CarrierPlan` model. A more complete system would probably have a `Carrier` model also.
+
 Another consideration would be internationalization. The extracted data are in Italian, which may be fine for an italian company, with a customer base in Italy. But since the company is going to be global, there should be some way to translate these content.
 
 ## Web framework
@@ -70,13 +72,13 @@ The DRF framework is complete, including an API browser, but I've always found i
 
 ## Tests
 
-For this project, I've initially decided to experiment leaving the tests out of the python source code. This means the packaging process can get only the actual code, and test code never gets to the "production" environment. The biggest advantage of this is eliminating the risk of importing and running them there, which could wreak havoc in the db.
+For this project, I've initially decided to experiment leaving the tests out of the python source code. This means some packaging process could only get the actual code, no tests whatsoever. The biggest advantage of this is eliminating the risk of importing and running them anywhere non local, which could wreak havoc in the db.
 
-I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found.
+Well, it does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency, created a "modelfactory", only to realize I couldn't import it in shell_plus... I had to go back and merge the tests again into the source.
 
-Well, it even does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency, and finally realized I couldn't import my new `modelfactory` in shell_plus... I had to merge the tests again into the source. 
+So, to remove the tests from the actual code, the `Dockerfile` recipe would have to delete the tests directories after copying the source, which is a little harder.
 
-So, to achieve again that same effect, the `Dockerfile` recipe would have to delete the tests files after copying the source files, which is harder, but doable.
+Also, I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found, it didn't find on their own.
 
 ## Deploy
 
@@ -91,19 +93,40 @@ To see what tools are available, call `make` :)
 
 ```bash
 $ docker-compose up -d
-$ make dbsetup
+$ make setupdb
+$ walletsaver/manage.py migrate
+```
+
+Or simply
+
+```bash
+$ make resetdb
+```
+
+## Run tests
+
+```bash
+$ pytest --cov=walletsaver --cov-branch --cov-report=term-missing
+```
+
+Or simply
+
+```bash
+$ make test
 ```
 
 ## Initialize data
 
-In the `manage.py` directory:
+Remember that scraping data, that would be scheduled to resync once or twice a day?
+Here it is, manually initialized:
+
+First enter the django shell:
 
 ```bash
-$ cd walletsaver
-$ ./manage.py shell_plus
+$ walletsaver/manage.py shell_plus
 ```
 
-Now fetch the fastweb data and you should obtain:
+Then scrape the fastweb data and import into the model. You should obtain:
 
 ````python
 In [1]: CarrierPlan.objects.resync_plans(carrier_id=1)
