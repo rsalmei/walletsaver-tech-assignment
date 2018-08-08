@@ -70,14 +70,13 @@ The DRF framework is complete, including an API browser, but I've always found i
 
 ## Tests
 
-For this project, I've decided to experiment leaving the tests out of the python source code. This means the packaging process can get only actual code, and test code never gets to the production environment. The biggest advantage of this is eliminating the risk of importing and running them there, which could wreak havok in the db.
+For this project, I've initially decided to experiment leaving the tests out of the python source code. This means the packaging process can get only the actual code, and test code never gets to the "production" environment. The biggest advantage of this is eliminating the risk of importing and running them there, which could wreak havoc in the db.
 
 I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found.
 
-Actually, when I got to the point of testing a django model, I've included the `factory-boy` dependency, and I've realized I couldn't import my new `modelfactory` in shell_plus...
-I undid the split tests from the source. 
+Well, it even does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency, and finally realized I couldn't import my new `modelfactory` in shell_plus... I had to merge the tests again into the source. 
 
-To achieve again that production obliterate of tests, the `Dockerfile` recipe would have to delete the tests files, which is doable, but harder.
+So, to achieve again that same effect, the `Dockerfile` recipe would have to delete the tests files after copying the source files, which is harder, but doable.
 
 ## Deploy
 
@@ -85,18 +84,29 @@ To achieve again that production obliterate of tests, the `Dockerfile` recipe wo
 
 # How to use
 
-## Initialize data
+I've written a `makefile`, to automate some common tasks, and make them simpler to use.
+To see what tools are available, call `make` :)
 
-Enter the `manage.py` directory and run:
+## Initialize database
 
 ```bash
+$ docker-compose up -d
+$ make dbsetup
+```
+
+## Initialize data
+
+In the `manage.py` directory:
+
+```bash
+$ cd walletsaver
 $ ./manage.py shell_plus
 ```
 
-Now fetch the fastweb data and should obtain:
+Now fetch the fastweb data and you should obtain:
 
 ````python
-In [1]: CarrierPlan.objects.resync_plans(1)
+In [1]: CarrierPlan.objects.resync_plans(carrier_id=1)
 
 In [2]: CarrierPlan.objects.all()
 Out[2]: <CarrierPlanQuerySet [<CarrierPlan: #1 fastweb:INTERNET>, <CarrierPlan: #2 fastweb:INTERNET + TELEFONO>, <CarrierPlan: #3 fastweb:INTERNET e Sky>, <CarrierPlan: #4 fastweb:INTERNET + TELEFONO e Sky>, <CarrierPlan: #5 fastweb:INTERNET + ENERGIA>, <CarrierPlan: #6 fastweb:INTERNET + TELEFONO + ENERGIA>]>
