@@ -66,9 +66,11 @@ I'll use `docker-compose` to get an up and running database, and maybe a Dockerf
 
 ## REST API
 
-This were a tough one. There's the famous Django Rest Framework, which I don't like, and alternatives like the also famous Restless and Tastypie, or the bleeding edge API Star.
+This were a tough one. There's the famous Django Rest Framework, which I don't really like, and alternatives like the also famous Restless and Tastypie, or the bleeding edge API Star.
 
 The DRF framework is complete, including an API browser, but I've always found it very convoluted. It tries to be so flexible that the usability suffers. But it is good nevertheless.
+
+The API Star is not yet compatible with django, and the other two I've not used. I'll go with the DRF, simple should be simple.
 
 ## Tests
 
@@ -76,11 +78,23 @@ For this project, I've initially decided to experiment leaving the tests out of 
 
 Well, it does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency, created a "modelfactory", only to realize I couldn't import it in shell_plus... I had to go back and merge the tests again into the source.
 
-So, to remove the tests from the actual code, the `Dockerfile` recipe would have to delete the tests directories after copying the source, which is a little harder.
+So, to remove the tests from the actual code, any `Dockerfile` recipe would have to delete the tests directories after copying the source, which is a little harder.
 
 Also, I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found, it didn't find on their own.
 
 ## Deploy
+
+Django comes builtin with a test server, but in any non-local environment it won't quite meet minimum expectations. For that it would be needed a WSGI server, like `uWSGI` or `Unicorn`. The Web Server Gateway Interface specifies how a server should interact with a python application.
+
+I'm not an expert DevOps, but in my last company, we encapsulated the app in a docker image comprised of a `uWSGI` server, and configured the concurrency to Fork Pool. Then, deployed in the same host another container with the full webserver nginx, acting as a reverse proxy, and enabling deploys with no downtime.
+
+The deploy used a process split in two stages: the build-push, which built the new image and pushed to Docker Hub, and the pull-run, which fetched this new image in all hosts via Ansible, ran them along the prior one and changed the configuration of nginx, which would redirect requests to the new container. After that, it safely stopped and removed the old containers.
+
+The scaling and load-balancing were also done manually. There was an `haproxy` deployed and monitored manually (yes, a SPOF) that would monitor health-checks and cpu loading of the current machine pool (say 20 hosts), and redirect requests in a sane way. The scaling was totally manual. If the current average loading was at 80% before the known rush hour of the day, someone would provision and run an `Ansible` playbook to bring up 10 hosts more. At the end of the day, you guessed it right, someone would again reclaim those machines, to keep the costs down.
+
+Well, this all works, but it literally won't scale, and I wouldn't do that nowadays. The Amazon AWS now does provide a wonderful solution to this: the Elastic Container Service (ECS). It integrates nicely with the Elastic Load Balancer for distributing traffic behind containers, and does the autoscaling for clusters with fine grained configuration. The best thing of a service like ECS is that it lets us share some of the responsibility in keeping all of this running, monitoring resources usage, increasing and decreasing VMs as needed, etc. The most important aspect ECS thrives is user experience, keeping it as consistent as possible.
+
+In any case, the process should be automated via a Continuous Integration tool, like CircleCI, Travis or Jenkins. The Amazon ECS services are specified by a "Task Definition" that defines things like environment variables, the container image to use, and the resources to allocate to the service (port, memory, CPU). And these task definitions could be created and registered through the very deployment process.
 
 ## Frontend
 
@@ -128,9 +142,26 @@ $ walletsaver/manage.py shell_plus
 
 Then scrape the fastweb data and import into the model. You should obtain:
 
-````python
+```python
 In [1]: CarrierPlan.objects.resync_plans(carrier_id=1)
 
 In [2]: CarrierPlan.objects.all()
 Out[2]: <CarrierPlanQuerySet [<CarrierPlan: #1 fastweb:INTERNET>, <CarrierPlan: #2 fastweb:INTERNET + TELEFONO>, <CarrierPlan: #3 fastweb:INTERNET e Sky>, <CarrierPlan: #4 fastweb:INTERNET + TELEFONO e Sky>, <CarrierPlan: #5 fastweb:INTERNET + ENERGIA>, <CarrierPlan: #6 fastweb:INTERNET + TELEFONO + ENERGIA>]>
-````
+```
+
+## Mobile API
+
+Now finally run the server:
+PS.: Python comes builtin with a test server, but in any other non-local environment, that would be needed a WSGI server, like `uWSGI`.
+
+```bash
+$ walletsaver/manage.py runserver
+```
+
+Go to the browser and enter:
+
+```html
+http://127.0.0.1:8000/api/v1/plans/
+```
+
+You should see the browsable API from Django Rest Framework, nice stuff.
