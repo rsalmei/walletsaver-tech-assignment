@@ -152,7 +152,6 @@ Out[2]: <CarrierPlanQuerySet [<CarrierPlan: #1 fastweb:INTERNET>, <CarrierPlan: 
 ## Mobile API
 
 Now finally run the server:
-PS.: Python comes builtin with a test server, but in any other non-local environment, that would be needed a WSGI server, like `uWSGI`.
 
 ```bash
 $ walletsaver/manage.py runserver
@@ -161,7 +160,9 @@ $ walletsaver/manage.py runserver
 Go to the browser and enter:
 
 ```html
-http://127.0.0.1:8000/api/v1/plans/
+http://127.0.0.1:8000/api/v1/
 ```
 
-You should see the browsable API from Django Rest Framework, nice stuff.
+You should see the browsable API from Django Rest Framework, nice stuff :)
+![browsable_api](readme_images/api.png)
+
