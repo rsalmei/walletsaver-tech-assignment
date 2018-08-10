@@ -254,6 +254,6 @@ That's it, you can try and play with the browsable API, but rest assured it's wo
 
 # The end
 
-Thank you Jacopo and Valeryi!
+Thank you Jacopo and Valeriy!
 
 I've enjoyed my time doing this. :wink:
