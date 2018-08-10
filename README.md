@@ -66,17 +66,20 @@ PostgreSQL is an easy choice too. Excellent database, and one I've already worke
 ## Docker infrastructure
 
 Nowadays it's the best way to set up complex applications, without falling in a dependency hell.
+
 I'll use `docker-compose` to get an up and running database, and the adminer, an open source admin interface compatible with Postgres.
 
 
 
-## REST API
+## REST API (for mobile clients)
 
-This were a tough one. There's the famous Django Rest Framework, which I don't really like, and alternatives like the also famous Restless and Tastypie, or the bleeding edge API Star.
+This were a tough one to choose. There's the famous `Django Rest Framework`, which I don't really like, and alternatives like the also famous `Restless` and `Tastypie`, or the bleeding edge `API Star`.
 
 The DRF framework is complete, including an API browser, but I've always found it very convoluted. It tries to be so flexible that the usability suffers. But it is good nevertheless.
 
-The API Star is not yet compatible with django, and the other two I've not used. I'll go with the DRF, simple should be simple.
+The `API Star` is not yet compatible with django, and the other two I've never used. I'll go with the DRF for now, maybe I change my mind.
+
+In the end, I made the API a nice package inside the `plans` django app, complete with its own serializers, urls and views. This gives a cool separation between the views and urls of the app, which takes care of the frontend. Oh, and DRF wasn't that bad :)
 
 
 ## Tests
@@ -98,7 +101,7 @@ I was able to achieve 100% branch coverage :)
 
 ## Deploy
 
-Django comes builtin with a test server, but in any non-local environment it won't quite meet minimum expectations. For that it would be needed a WSGI server, like `uWSGI` or `Unicorn`. The Web Server Gateway Interface specifies how a server should interact with a python application.
+Django comes with a builtin test server, but in any non-local environment it won't quite meet minimum expectations. For that it would be needed a WSGI server, like `uWSGI` or `Unicorn`. The Web Server Gateway Interface specifies how a server should interact with a python application.
 
 I'm not an expert DevOps, but in my last company, we encapsulated the app in a docker image comprised of a `uWSGI` server, and configured the concurrency to Fork Pool. Then, deployed in the same host another container with the full webserver nginx, acting as a reverse proxy, and enabling deploys with no downtime.
 
@@ -184,6 +187,9 @@ http://127.0.0.1:8000/api/v1/
 ```
 
 You should see the browsable API from Django Rest Framework, nice stuff :)
+
+Below is an example of the `/api/v1/list` api:
+
 ![browsable_api](readme_images/api.png)
 
 
@@ -194,22 +200,24 @@ Here we have:
 
 |HTTP VERB|URI|DESCRIPTION|
 | :---: | :--- | --- |
-|GET      | plans | List all plans, sorted by id.
+|GET      | `plans` | List all plans, sorted by id.
 |         |       |
 |         |       | Query options:
 |         |       |
-|         |       |     ?price=[int[,int]]
+|         |       |     `?price=[int[,int]]`
 |         |       |         Filter the results by price range. If only one int
 |         |       |         is provided, it is interpreted as the minimum price;
 |         |       |         if both are provided, they represent a range of prices.
 |         |       |         Both are **inclusive**.
 |         |       |
-|         |       |     ?sort=[name\|price][:[asc\|desc]]
+|         |       |     `?sort=[name\|price][:[asc\|desc]]`
 |         |       |         Sorts the results by name or price. If none of them is
 |         |       |         provided, the results are sorted by id.
 |         |       |         In any case, it's possible to suffix by :asc or :desc
 |         |       |         to reverse results.
-| GET     | plans/<id> | Retrieves a particular plan by id.
+|         |       |
+| GET     | `plans/<id>/` | Retrieves a particular plan by id.
 
 As all entries of the API are read-only, it is not necessary to implement any authentication scheme, but even so the system was configured to `IsAuthenticatedOrReadOnly` to be safe. If the Mobile clients ever get an URI to buy things, this would be a must.
 
+That's it, you can try and play with the browsable API, but rest assured it's working great, as the 100% code coverage guarantees :)

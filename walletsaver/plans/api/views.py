@@ -9,7 +9,7 @@ from plans.models import CarrierPlan
 
 
 class CarrierPlanList(generics.ListAPIView):
-    """Carrier plans list mobile API, with filtering and ordering."""
+    """Carrier plans List Mobile API, with filtering and ordering."""
     serializer_class = CarrierPlanSerializer
 
     def get_queryset(self):
@@ -44,6 +44,6 @@ class CarrierPlanList(generics.ListAPIView):
 
 
 class CarrierPlanDetail(generics.RetrieveAPIView):
-    """Carrier plans detail mobile API."""
+    """Carrier plans Detail Mobile API."""
     queryset = CarrierPlan.objects.all()
     serializer_class = CarrierPlanSerializer
