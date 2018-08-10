@@ -83,6 +83,8 @@ def test_api_list_price_range(price_range, expected_ids, list_url, client):
     '12.50,',
     '20.,',
     '20.0,',
+    ',30',
+    '0,30,0',
     'rogerio',
     '0,rogerio',
     'rogerio,0',

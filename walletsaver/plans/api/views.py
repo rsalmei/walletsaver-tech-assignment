@@ -29,7 +29,7 @@ class CarrierPlanList(generics.ListAPIView):
             value = tuple(map(Decimal, value.split(',')))
             if len(value) > 2:
                 raise ValueError()
-        except InvalidOperation:
+        except (InvalidOperation, ValueError):
             raise ParseError('price should be [int[,int]]')
         else:
             if len(value) == 2:
