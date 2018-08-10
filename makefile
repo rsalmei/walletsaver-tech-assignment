@@ -35,6 +35,9 @@ resetdb: down up sleep1 setupdb
 install:
 	pip install -r requirements.txt
 
+create_admin:
+	walletsaver/manage.py createsuperuser --email admin@test.com --username admin
+
 clean-pyc:
 	find . -type f -name *.pyc -delete
 
