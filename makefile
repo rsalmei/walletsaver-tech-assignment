@@ -12,6 +12,7 @@ ALTER ROLE $(DB_USER) SET timezone TO 'UTC'; \
 ALTER ROLE $(DB_USER) CREATEDB; \
 GRANT ALL PRIVILEGES ON DATABASE $(DB_NAME) TO $(DB_USER);
 
+ADMINER = http://localhost:8080/?pgsql=db-serv&username=wsaveruser&db=wsaver&ns=public
 
 all:
 	@grep -E "^\w+:" makefile | cut -d: -f1
@@ -46,3 +47,6 @@ test:
 
 cov-report:
 	coverage report -m
+
+adminer:
+	open "$(ADMINER)"

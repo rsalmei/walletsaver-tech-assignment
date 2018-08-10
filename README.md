@@ -67,8 +67,7 @@ PostgreSQL is an easy choice too. Excellent database, and one I've already worke
 
 Nowadays it's the best way to set up complex applications, without falling in a dependency hell.
 
-I'll use `docker-compose` to get an up and running database, and the adminer, an open source admin interface compatible with Postgres.
-
+I'll use `docker-compose` to get an up and running database, and the `adminer`, an open source admin interface compatible with Postgres.
 
 
 ## REST API (for mobile clients)
@@ -135,6 +134,12 @@ Or simply
 
 ```bash
 $ make resetdb
+```
+
+If you'd like to verify the database state,  enter `adminer` (the password is "wsaver4pwd"):
+
+```bash
+$ make adminer
 ```
 
 
