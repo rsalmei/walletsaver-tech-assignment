@@ -115,6 +115,30 @@ In any case, the process should be automated via a Continuous Integration tool, 
 
 ## Frontend
 
+Of course this is the most distant to me, I've never programed any frontend, have always been a backend engineer.
+And I tried hard, but unfortunately it wasn't possible.
+
+I've studied several tutorials, and I mean _a lot_. But I was overwhelmed, I couldn't simply copy/paste a lot of code that I didn't understand, what made me go and look for a world of information, which led to a ton more...
+
+But I've tried a lot of things, and can safely say that that sparkled and awakened my curiosity. I've started with the seemingly most used nowadays: React. This led me to npm, node, web-pack, node-modules, and a lot of other odd things to me. Even studying them individually, I could not actually use React. I've even grasp the `setState` conundrum, the asynchronous method with a callback, that can't be used right after execution, just in the next `render` it comes into effect.
+
+Then I've gone to Angular, but didn't invested too much time, as I didn't really like the syntax. It was heavy in JavaScript, with a syntax I'm not used to see, with Promises and Closures.
+
+Then I finally got to Vue, and can say it is the one I liked the most. And it seems the community likes it too, that it's become a favourite among developers. They say it borrows the best parts of both React and Angular, and many agree that VueJS's learning curve is the most gentle. Well, I've stayed the most time of these last two days in it, can say I've read dozens of articles and tutorials on how to integrate Django and Vue... Single Page App or not? Hot Module Replacement? Assets, Axios client or fetch, webpack-loader, two servers? Cross-Origin Resource Sharing (CORS). Separate Django apps or coupled? Vue-cli, vue-router, vuex, :fearful:
+
+I think I could get somewhere, but it would take a lot more dedication, and maybe a few more weeks in the process. I was trying to setup my environment:
+
+```bash
+$ npm install -g vue-cli
+$ vue init NdagiStanley/vue-django <app>
+$ vue init webpack <app>
+$ npm init
+
+$ npm install --save-dev axios bootstrap-sass jquery node-sass sass-loader vue webpack babel-core babel-plugin-transform-runtime babel-preset-es2015 babel-preset-stage-0 babel-runtime css-loader style-loader vue-loader vue-html-loader vue-hot-reload-api
+```
+
+But couldn't go much farther after all. Probably I'll continue familiarizing myself with this brave new world.
+
 
 # How to use
 
@@ -226,3 +250,10 @@ Here we have:
 As all entries of the API are read-only, it is not necessary to implement any authentication scheme, but even so the system was configured to `IsAuthenticatedOrReadOnly` to be safe. If the Mobile clients ever get an URI to buy things, this would be a must.
 
 That's it, you can try and play with the browsable API, but rest assured it's working great, as the 100% code coverage guarantees :)
+
+
+# The end
+
+Thank you Jacopo and Valeryi!
+
+I've enjoyed my time doing this. :wink:
