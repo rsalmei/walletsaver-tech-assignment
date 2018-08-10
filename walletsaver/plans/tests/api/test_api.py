@@ -6,21 +6,20 @@ from django.urls import reverse
 
 from plans.models import CarrierPlan
 
+PLANS = (
+    dict(id=1, carrier=1, title='internet', description='descr',
+         current_price='35.20', old_price='0.00'),
+    dict(id=2, carrier=1, title='sky', description='descr',
+         current_price='48.99', old_price='0.00'),
+    dict(id=3, carrier=1, title='mobile', description='descr',
+         current_price='12.50', old_price='0.00'),
+)
+
 
 @pytest.fixture
 def data(db):
-    CarrierPlan(
-        id=1, carrier=1, title='internet', description='descr',
-        current_price=Decimal('35.20'), old_price=Decimal()
-    ).save()
-    CarrierPlan(
-        id=2, carrier=1, title='sky', description='descr',
-        current_price=Decimal('48.99'), old_price=Decimal()
-    ).save()
-    CarrierPlan(
-        id=3, carrier=1, title='mobile', description='descr',
-        current_price=Decimal('12.50'), old_price=Decimal()
-    ).save()
+    for plan in PLANS:
+        CarrierPlan(**plan).save()
 
 
 @pytest.fixture
@@ -28,21 +27,20 @@ def list_url(data):
     yield reverse('plans-list')
 
 
-@pytest.fixture
-def detail_url(data):
-    yield reverse('plans-detail', args=(1,))
-
-
 @pytest.mark.django_db
-def test_api_list_exists(list_url, client):
+def test_api_list(list_url, client):
     r = client.get(list_url)
     assert r.status_code == 200
+    assert all(p in PLANS for p in r.json())
 
 
+@pytest.mark.parametrize('plan_dict', PLANS)
 @pytest.mark.django_db
-def test_api_detail_exists(detail_url, client):
+def test_api_detail(plan_dict, data, client):
+    detail_url = reverse('plans-detail', args=(plan_dict['id'],))
     r = client.get(detail_url)
     assert r.status_code == 200
+    assert r.json() == plan_dict
 
 
 @pytest.mark.parametrize('price_range, expected_ids', [
@@ -176,4 +174,3 @@ def test_api_list_both_price_range_and_sort(price_range, sort, expected_ids, lis
     op = operator.itemgetter('id')
     assert r.status_code == 200
     assert tuple(map(op, r.json())) == expected_ids
-
