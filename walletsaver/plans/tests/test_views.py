@@ -1,5 +1,4 @@
 import operator
-from decimal import Decimal
 
 import pytest
 from django.urls import reverse

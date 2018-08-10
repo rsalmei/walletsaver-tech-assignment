@@ -78,7 +78,7 @@ The DRF framework is complete, including an API browser, but I've always found i
 
 The `API Star` is not yet compatible with django, and the other two I've never used. I'll go with the DRF for now, maybe I change my mind.
 
-In the end, I made the API a nice package inside the `plans` django app, complete with its own serializers, urls and views. This gives a cool separation between the views and urls of the app, which takes care of the frontend. Oh, and DRF wasn't that bad :)
+In the end, I made the API nicely inside the `plans` django app, complete with its needed serializers, urls and views. This gives a cool integration between the app and its API, which enables new apps to expose their own API, just including its `urls` in the main, project level `urls`. Oh, and DRF wasn't that bad :)
 
 
 ## Tests

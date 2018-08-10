@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from . import views
+from plans import views
 
 urlpatterns = [
     path('plans/', views.CarrierPlanList.as_view(), name='plans-list'),
