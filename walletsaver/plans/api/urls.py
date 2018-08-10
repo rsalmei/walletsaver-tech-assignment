@@ -1,9 +1,11 @@
-from rest_framework.routers import DefaultRouter
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
-router = DefaultRouter()
-# in a real project, there would be a `carriers` also.
-router.register(r'plans', views.CarrierPlanViewSet, base_name='carrierplans')
+urlpatterns = [
+    path('plans/', views.CarrierPlanList.as_view(), name='plans-list'),
+    path('plans/<int:pk>/', views.CarrierPlanDetail.as_view(), name='plans-detail')
+]
 
-urlpatterns = router.urls
+urlpatterns = format_suffix_patterns(urlpatterns)

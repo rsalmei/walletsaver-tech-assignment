@@ -1,10 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import generics
 
 from plans.models import CarrierPlan
 from plans.api.serializers import CarrierPlanSerializer
+class CarrierPlanList(generics.ListAPIView):
 
 
-class CarrierPlanViewSet(viewsets.ReadOnlyModelViewSet):
-    """Carrier plans mobile API, readonly list and detail actions only."""
+class CarrierPlanDetail(generics.RetrieveAPIView):
+    """Carrier plans detail mobile API."""
     queryset = CarrierPlan.objects.all()
     serializer_class = CarrierPlanSerializer
