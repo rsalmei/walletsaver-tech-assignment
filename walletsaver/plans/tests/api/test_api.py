@@ -125,6 +125,10 @@ def test_api_list_sort(sort, expected_ids, list_url, client):
 
 
 @pytest.mark.parametrize('price_range, sort, expected_ids', [
+    ('', ':asc', (1, 2, 3)),
+    ('', ':desc', (3, 2, 1)),
+    ('', 'rogerio:asc', (1, 2, 3)),
+    ('', 'rogerio:desc', (3, 2, 1)),
     ('', 'name:asc', (1, 3, 2)),
     ('', 'name:desc', (2, 3, 1)),
     ('', 'price:asc', (3, 1, 2)),
