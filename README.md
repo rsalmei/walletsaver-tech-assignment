@@ -38,6 +38,7 @@ The [https://www.fastweb.it](https://www.fastweb.it) page I needed to extract da
 
 But fortunately they weren't that hard to extract, I've initially made an imperative algorithm using for loops, but as I'm using a modern Python 3, I've challenged myself to do it in a functional style, using only iterators. It came out very neat and pythonic.
 
+
 ### Note: data synchronization and handling
 
 In an actual production system, there would be another important part: updating these data seamlessly. The data already captured should be synchronized from time to time with the live one on the source site, minimizing dirty reads and downtime.
@@ -49,20 +50,25 @@ Also the software architecture implemented needed only a `CarrierPlan` model. A 
 
 Another consideration would be internationalization. The extracted data are in Italian, which may be fine for an italian company, with a customer base in Italy. But since the company is going to be global, there should be some way to translate these content.
 
+
 ## Web framework
 
 I'll use Django, no doubt about it. I love Django.
 
 Only I don't know the new Django 2.0, but it's a great opportunity to get to try it! :)
 
+
 ## Database
 
 PostgreSQL is an easy choice too. Excellent database, and one I've already worked with.
 
+
 ## Docker infrastructure
 
-Nowadays it's the best way to set up complex applications, without falling in dependency hell.
-I'll use `docker-compose` to get an up and running database, and maybe a Dockerfile at the end, for an easy deployment.
+Nowadays it's the best way to set up complex applications, without falling in a dependency hell.
+I'll use `docker-compose` to get an up and running database, and the adminer, an open source admin interface compatible with Postgres.
+
+
 
 ## REST API
 
@@ -72,15 +78,23 @@ The DRF framework is complete, including an API browser, but I've always found i
 
 The API Star is not yet compatible with django, and the other two I've not used. I'll go with the DRF, simple should be simple.
 
+
 ## Tests
 
-For this project, I've initially decided to experiment leaving the tests out of the python source code. This means some packaging process could only get the actual code, no tests whatsoever. The biggest advantage of this is eliminating the risk of importing and running them anywhere non local, which could wreak havoc in the db.
+For this project, I've initially decided to experiment leaving the tests out of the python source code. This means a packaging process could only get the actual code, no tests whatsoever. The biggest advantage of this is eliminating the risk of importing and running them anywhere non local, which could wreak havoc in the db (been there, seen that).
 
-Well, it does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency, created a "modelfactory", only to realize I couldn't import it in shell_plus... I had to go back and merge the tests again into the source.
+Well, it does work, but when I got to the point of testing a django model, I've included the `factory-boy` dependency and created a "modelfactory", only to realize I couldn't import it in shell_plus... I had to go back and merge the tests again into the source.
 
-So, to remove the tests from the actual code, any `Dockerfile` recipe would have to delete the tests directories after copying the source, which is a little harder.
+So, to remove the tests from the actual code, the `Dockerfile` recipe would have to delete the tests directories after copying the source, which is a little harder.
 
 Also, I had to include a new dependency `pytest-pythonpath` and create a `pytest.ini` to get the django settings to be found, it didn't find on their own.
+
+Well, after all this, the tests were a great success! They were assembled with great care, all the possible edge cases covered (see the `api` tests)!
+
+I was able to achieve 100% branch coverage :)
+
+![tests results](readme_images/tests.png)
+
 
 ## Deploy
 
@@ -96,12 +110,15 @@ Well, this all works, but it literally won't scale, and I wouldn't do that nowad
 
 In any case, the process should be automated via a Continuous Integration tool, like CircleCI, Travis or Jenkins. The Amazon ECS services are specified by a "Task Definition" that defines things like environment variables, the container image to use, and the resources to allocate to the service (port, memory, CPU). And these task definitions could be created and registered through the very deployment process.
 
+
 ## Frontend
+
 
 # How to use
 
 I've written a `makefile`, to automate some common tasks, and make them simpler to use.
 To see what tools are available, call `make` :)
+
 
 ## Initialize database
 
@@ -117,6 +134,7 @@ Or simply
 $ make resetdb
 ```
 
+
 ## Run tests
 
 ```bash
@@ -129,10 +147,11 @@ Or simply
 $ make test
 ```
 
+
 ## Initialize data
 
-Remember that scraping data, that would be scheduled to resync once or twice a day?
-Here it is, manually initialized:
+Do you remember the scraping process, that I've explained should be scheduled to resync once or twice a day?
+Well, here it is, manually initialized:
 
 First enter the django shell:
 
@@ -140,7 +159,7 @@ First enter the django shell:
 $ walletsaver/manage.py shell_plus
 ```
 
-Then scrape the fastweb data and import into the model. You should obtain:
+Then scrape the fastweb site to fill our data model. You should obtain:
 
 ```python
 In [1]: CarrierPlan.objects.resync_plans(carrier_id=1)
@@ -148,6 +167,7 @@ In [1]: CarrierPlan.objects.resync_plans(carrier_id=1)
 In [2]: CarrierPlan.objects.all()
 Out[2]: <CarrierPlanQuerySet [<CarrierPlan: #1 fastweb:INTERNET>, <CarrierPlan: #2 fastweb:INTERNET + TELEFONO>, <CarrierPlan: #3 fastweb:INTERNET e Sky>, <CarrierPlan: #4 fastweb:INTERNET + TELEFONO e Sky>, <CarrierPlan: #5 fastweb:INTERNET + ENERGIA>, <CarrierPlan: #6 fastweb:INTERNET + TELEFONO + ENERGIA>]>
 ```
+
 
 ## Mobile API
 
@@ -165,4 +185,31 @@ http://127.0.0.1:8000/api/v1/
 
 You should see the browsable API from Django Rest Framework, nice stuff :)
 ![browsable_api](readme_images/api.png)
+
+
+### API Help
+
+The API is rooted in `/api/v1/`.
+Here we have:
+
+|HTTP VERB|URI|DESCRIPTION|
+| :---: | :--- | --- |
+|GET      | plans | List all plans, sorted by id.
+|         |       |
+|         |       | Query options:
+|         |       |
+|         |       |     ?price=[int[,int]]
+|         |       |         Filter the results by price range. If only one int
+|         |       |         is provided, it is interpreted as the minimum price;
+|         |       |         if both are provided, they represent a range of prices.
+|         |       |         Both are **inclusive**.
+|         |       |
+|         |       |     ?sort=[name\|price][:[asc\|desc]]
+|         |       |         Sorts the results by name or price. If none of them is
+|         |       |         provided, the results are sorted by id.
+|         |       |         In any case, it's possible to suffix by :asc or :desc
+|         |       |         to reverse results.
+| GET     | plans/<id> | Retrieves a particular plan by id.
+
+As all entries of the API are read-only, it is not necessary to implement any authentication scheme, but even so the system was configured to `IsAuthenticatedOrReadOnly` to be safe. If the Mobile clients ever get an URI to buy things, this would be a must.
 
