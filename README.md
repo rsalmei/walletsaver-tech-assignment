@@ -217,7 +217,7 @@ http://127.0.0.1:8000/api/v1/
 
 You should see the browsable API from Django Rest Framework, nice stuff :)
 
-Below is an example of the `/api/v1/list` api:
+Below is an example of the `/plans` list api:
 
 ![browsable_api](readme_images/api.png)
 
