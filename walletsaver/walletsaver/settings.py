@@ -127,7 +127,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SHELL_PLUS_POST_IMPORTS = (
-    ('plans.api.serializers', '*'),
+    ('plans.serializers', '*'),
 )
 
 REST_FRAMEWORK = {
